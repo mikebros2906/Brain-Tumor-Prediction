@@ -101,7 +101,7 @@ div[data-testid="stDataFrame"] {
 # Helpers
 # ----------------------------
 def resolve_default_weights() -> str:
-    # Prefer your stable "models/best.pt" if it exists, else fallback to yolov8n.pt in root
+    # Prefer your stable "best.pt" if it exists, else fallback to yolov8n.pt in root
     candidates = [
         Path("models") / "best.pt",
         Path("runs") / "detect" / "train" / "weights" / "best.pt",
@@ -183,7 +183,7 @@ st.sidebar.caption("Tweak thresholds and switch model weights.")
 weights_path = st.sidebar.text_input(
     "Weights (.pt) path",
     value=resolve_default_weights(),
-    help="Tip: Keep a stable copy at models/best.pt",
+    help="Tip: Keep a stable copy at best.pt",
 )
 
 conf_thres = st.sidebar.slider("Confidence threshold", 0.05, 0.95, 0.65, 0.01)
@@ -229,7 +229,7 @@ with tabs[0]:
         st.markdown("### Output")
 
         if not weights_path:
-            st.error("No weights path provided. Set it in the sidebar (recommended: models/best.pt).")
+            st.error("No weights path provided. Set it in the sidebar (recommended: best.pt).")
             st.stop()
 
         weights_file = Path(weights_path)
@@ -362,7 +362,7 @@ with tabs[2]:
     st.markdown("### Tips to keep it clean")
     st.markdown(
         """
-- Put your final model at **`models/best.pt`** and point the app there.
-- You can delete old experiment folders in `runs/` after you’ve saved `models/best.pt`.
+- Put your final model at **`best.pt`** and point the app there.
+- You can delete old experiment folders in `runs/` after you’ve saved `best.pt`.
 """
     )
