@@ -102,12 +102,7 @@ div[data-testid="stDataFrame"] {
 # ----------------------------
 def resolve_default_weights() -> str:
     # Prefer your stable "best.pt" if it exists, else fallback to yolov8n.pt in root
-    candidates = [
-        Path("models") / "best.pt",
-        Path("runs") / "detect" / "train" / "weights" / "best.pt",
-        Path("yolov8n.pt"),
-        Path("yolov8s.pt"),
-    ]
+    return "best.pt"
     for p in candidates:
         if p.exists():
             return p.as_posix()
