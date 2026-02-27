@@ -1,4 +1,3 @@
-# app/app.py
 from __future__ import annotations
 
 import os
@@ -19,9 +18,6 @@ except Exception:
 from ultralytics import YOLO
 
 
-# ----------------------------
-# Page config (SaaS-like)
-# ----------------------------
 st.set_page_config(
     page_title="Brain Tumor Detector",
     page_icon="🧠",
@@ -29,16 +25,13 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# ----------------------------
-# Modern CSS (Streamlit hacking)
-# ----------------------------
 st.markdown(
     """
 <style>
 /* App background */
 .stApp {
-  background: radial-gradient(1200px 600px at 20% 0%, rgba(99,102,241,.18), transparent 55%),
-              radial-gradient(1000px 500px at 80% 10%, rgba(34,197,94,.12), transparent 55%),
+  background: radial-gradient(1200px 600px at 20% 0%, rgba(181, 112, 38,.30), transparent 55%),
+              radial-gradient(1000px 500px at 80% 10%, rgba(181, 179, 38,.12), transparent 55%),
               #0b1220;
   color: #e5e7eb;
 }
@@ -48,7 +41,7 @@ st.markdown(
 
 /* Sidebar styling */
 section[data-testid="stSidebar"] {
-  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+  background: linear-gradient(180deg, rgba(143, 139, 9,.20), rgba(255,255,255,.01));
   border-right: 1px solid rgba(255,255,255,.08);
 }
 section[data-testid="stSidebar"] * { color: #e5e7eb; }
@@ -58,8 +51,8 @@ h1, h2, h3 { letter-spacing: -0.02em; }
 
 /* Card component */
 .card {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(143, 9, 76,0.20);
+  border: 1px solid rgba(255,255,255,0.20);
   border-radius: 16px;
   padding: 16px 16px;
   box-shadow: 0 10px 30px rgba(0,0,0,.25);
@@ -97,11 +90,7 @@ div[data-testid="stDataFrame"] {
 )
 
 
-# ----------------------------
-# Helpers
-# ----------------------------
 def resolve_default_weights() -> str:
-    # Prefer your stable "best.pt" if it exists, else fallback to yolov8n.pt in root
     return "best.pt"
     for p in candidates:
         if p.exists():
@@ -169,9 +158,6 @@ def card(title: str, value: str, subtitle: str = ""):
     )
 
 
-# ----------------------------
-# Sidebar: Control Panel
-# ----------------------------
 st.sidebar.markdown("## Control Panel")
 st.sidebar.caption("Tweak thresholds and switch model weights.")
 
@@ -189,9 +175,6 @@ st.sidebar.markdown("### Safety")
 st.sidebar.warning("Portfolio demo only. Not medical advice.", icon="⚠️")
 
 
-# ----------------------------
-# Header
-# ----------------------------
 st.markdown("## 🧠 Brain Tumor Detector")
 st.markdown(
     '<span class="muted">Modern dashboard UI • Upload an MRI (jpg/png) • Detection + tumor type + bounding box</span>',
@@ -199,14 +182,11 @@ st.markdown(
 )
 
 if "history" not in st.session_state:
-    st.session_state.history = []  # list of dicts
+    st.session_state.history = []
 
 
 tabs = st.tabs(["🔍 Predict", "📈 Analytics", "ℹ️ Model"])
 
-# ----------------------------
-# Tab 1: Predict
-# ----------------------------
 with tabs[0]:
     colA, colB = st.columns([1.1, 0.9], gap="large")
 
@@ -235,7 +215,6 @@ with tabs[0]:
         model = load_model(weights_path)
 
         if upload:
-            # Inference
             bgr = pil_to_bgr(pil_img)
 
             t0 = time.time()
@@ -254,12 +233,9 @@ with tabs[0]:
             top_class = df.iloc[0]["type"] if detected else "—"
             top_conf = float(df.iloc[0]["confidence"]) if detected else 0.0
 
-            # Render annotated image
-            # Ultralytics plot() returns BGR array
             annotated_bgr = r0.plot()
             annotated_pil = bgr_to_pil(annotated_bgr)
 
-            # KPI cards
             k1, k2 = st.columns(2, gap="medium")
             with k1:
                 card("Tumor detected", "✅ Yes" if detected else "❌ No", f"Confidence ≥ {conf_thres:.2f}")
@@ -275,7 +251,6 @@ with tabs[0]:
             st.markdown("#### Annotated result")
             st.image(annotated_pil, use_container_width=True)
 
-            # Download annotated
             buf = BytesIO()
             annotated_pil.save(buf, format="PNG")
             st.download_button(
@@ -289,7 +264,6 @@ with tabs[0]:
             st.markdown("#### Detections")
             st.dataframe(df, use_container_width=True, hide_index=True)
 
-            # Store history
             st.session_state.history.insert(
                 0,
                 {
@@ -306,9 +280,6 @@ with tabs[0]:
             st.info("Upload an image to see predictions.")
 
 
-# ----------------------------
-# Tab 2: Analytics
-# ----------------------------
 with tabs[1]:
     st.markdown("### Recent predictions")
     if not st.session_state.history:
@@ -327,10 +298,7 @@ with tabs[1]:
 
         st.dataframe(hdf, use_container_width=True, hide_index=True)
 
-
-# ----------------------------
-# Tab 3: Model info
-# ----------------------------
+url = "https://www.linkedin.com/in/somikchowdhury/"
 with tabs[2]:
     st.markdown("### Model & dataset scope")
     st.markdown(
@@ -354,10 +322,5 @@ with tabs[2]:
     st.markdown("### Current weights")
     st.code(weights_path or "(none)")
 
-    st.markdown("### Tips to keep it clean")
-    st.markdown(
-        """
-- Put your final model at **`best.pt`** and point the app there.
-- You can delete old experiment folders in `runs/` after you’ve saved `best.pt`.
-"""
-    )
+    st.markdown("### Created and Maintained By:")
+    st.markdown(f"- Somik Chowdhury ([LinkedIn]({url}))")
